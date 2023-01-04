@@ -4,10 +4,8 @@ import { Container, Table } from "react-bootstrap";
 import Sidebar from "../Components/Sidebar";
 import Form from "react-bootstrap/Form";
 import "./Home.css";
-import Spinner from "react-bootstrap/Spinner";
 export default function Home() {
   const [fetchData, setFetchData] = useState([]);
-  const [showSpinner, setShowSpinner] = useState(false);
   const [showData, setShowData] = useState({
     home_team: { team: fetchData.home_team },
   });
@@ -24,7 +22,6 @@ export default function Home() {
   const handleShow = () => setShow(true);
 
   const fetchProducts = async () => {
-    setShowSpinner(true);
     try {
       const res = await axios.get(
         `https://www.balldontlie.io/api/v1/games?_limit=30`
@@ -34,7 +31,6 @@ export default function Home() {
       if (data && data.data) {
         setFetchData(data.data);
       }
-      setShowSpinner(false);
     } catch (error) {
       console.log(error);
     }
@@ -83,8 +79,6 @@ export default function Home() {
         />
 
         <Table striped bordered hover>
-          {showSpinner && <Spinner animation="border" variant="primary" />}
-
           <thead
             style={{
               background: "#074684",
@@ -108,33 +102,30 @@ export default function Home() {
               <th>Division</th>
             </tr>
           </thead>
-          {fetchData.length > 0 ? (
-            fetchData.slice(page * 5 - 5, page * 5).map((data) => (
-              <tbody onClick={handleShow} key={data.id}>
-                <tr
-                  onClick={() => sidebarData(data.id)}
-                  style={{
-                    background: "#F8FBFD",
-                    borderRadius: "5px",
-                    fontFamily: "Roboto",
-                    fontStyle: "normal",
-                    fontWeight: 700,
-                    fontSize: "24px",
-                    lineHeight: "56px",
-                    color: "#000000",
-                  }}
-                >
-                  <td> {data.home_team.name}</td>
-                  <td>{data.home_team.city}</td>
-                  <td>{data.home_team.abbreviation}</td>
-                  <td>{data.home_team.conference}</td>
-                  <td>{data.home_team.division}</td>
-                </tr>
-              </tbody>
-            ))
-          ) : (
-            <p>Not Found</p>
-          )}
+
+          {fetchData.slice(page * 5 - 5, page * 5).map((data) => (
+            <tbody onClick={handleShow} key={data.id}>
+              <tr
+                onClick={() => sidebarData(data.id)}
+                style={{
+                  background: "#F8FBFD",
+                  borderRadius: "5px",
+                  fontFamily: "Roboto",
+                  fontStyle: "normal",
+                  fontWeight: 700,
+                  fontSize: "24px",
+                  lineHeight: "56px",
+                  color: "#000000",
+                }}
+              >
+                <td> {data.home_team.name}</td>
+                <td>{data.home_team.city}</td>
+                <td>{data.home_team.abbreviation}</td>
+                <td>{data.home_team.conference}</td>
+                <td>{data.home_team.division}</td>
+              </tr>
+            </tbody>
+          ))}
         </Table>
         {fetchData.length > 0 && (
           <div className="pagination">
